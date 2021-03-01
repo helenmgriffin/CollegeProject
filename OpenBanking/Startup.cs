@@ -48,6 +48,7 @@ namespace OpenBanking
                 options.ClientSecret = Configuration["okta:ClientSecret"];
                 options.Authority = Configuration["okta:Domain"];
                 options.CallbackPath = Configuration["okta:RedirectUri"];
+                options.SignedOutRedirectUri = Configuration["okta:PostLogoutRedirectUri"]; 
                 options.ResponseType = "code";
                 options.SaveTokens = true;
                 options.UseTokenLifetime = false;
@@ -56,10 +57,13 @@ namespace OpenBanking
                 options.Scope.Add("profile");
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    NameClaimType = "name"
+                    NameClaimType = "name",
+                    RoleClaimType = "groups",
+                    ValidateIssuer = true
                 };
             });
 
+            services.AddAuthorization();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
