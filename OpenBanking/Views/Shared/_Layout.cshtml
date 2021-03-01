@@ -34,7 +34,27 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>
+                @if (Context.User.Identity.IsAuthenticated)
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <p class="navbar-text">Hello, <b>@Context.User.Identity.Name</b></p>
+                        </li>
+                        <li>@Html.ActionLink("Profile", "Profile", "Home", null, new { id = "profile-button" })</li>
+                        <li>
+                            <a id="logout-button" onclick="document.getElementById('logout_form').submit();" style="cursor: pointer;">Log out</a>
+                        </li>
+                    </ul>
+                    <form asp-controller="Account" asp-action="Logout" method="post" id="logout_form"></form>
+                }
+                else
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>@Html.ActionLink("Log in", "Login", "Account", null, new { id = "login-button" })</li>
+                    </ul>
+                }
             </div>
+           
         </div>
     </nav>
 

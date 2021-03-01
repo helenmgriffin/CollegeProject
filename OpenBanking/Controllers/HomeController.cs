@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenBanking.Models;
 
@@ -27,6 +28,12 @@ namespace OpenBanking.Controllers
             ViewData["Message"] = "Your contact page.";
 
             return View();
+        }
+
+        [Authorize]
+        public ActionResult Profile()
+        {
+            return View(HttpContext.User.Claims);
         }
 
         public IActionResult Privacy()

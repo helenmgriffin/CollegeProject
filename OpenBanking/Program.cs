@@ -19,6 +19,10 @@ namespace OpenBanking
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    config.AddJsonFile("authconfig.json");
+                })
                 .UseStartup<Startup>();
     }
 }
