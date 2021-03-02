@@ -26,5 +26,12 @@ namespace OpenBanking.Controllers
         {
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        [Route("/Account/AccessDenied")]
+        public ActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }
