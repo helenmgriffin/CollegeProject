@@ -5,6 +5,7 @@
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     <UserSecretsId>e3669fd7-a4bd-4f4a-93a9-7d88f2607db6</UserSecretsId>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
