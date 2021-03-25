@@ -1,6 +1,6 @@
 using System;
 
-namespace OpenBanking.Models
+namespace CollegeProject.Models
 {
     public class ErrorViewModel
     {

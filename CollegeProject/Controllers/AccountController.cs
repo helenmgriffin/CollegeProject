@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 
-namespace OpenBanking.Controllers
+namespace CollegeProject.Controllers
 {
     public class AccountController : Controller
     {

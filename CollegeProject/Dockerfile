@@ -8,16 +8,16 @@ EXPOSE 443
 
 FROM microsoft/dotnet:2.1-sdk-nanoserver-1709 AS build
 WORKDIR /src
-COPY ["OpenBanking/OpenBanking.csproj", "OpenBanking/"]
-RUN dotnet restore "OpenBanking/OpenBanking.csproj"
+COPY ["CollegeProject/CollegeProject.csproj", "CollegeProject/"]
+RUN dotnet restore "CollegeProject/CollegeProject.csproj"
 COPY . .
-WORKDIR "/src/OpenBanking"
-RUN dotnet build "OpenBanking.csproj" -c Release -o /app
+WORKDIR "/src/CollegeProject"
+RUN dotnet build "CollegeProject.csproj" -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "OpenBanking.csproj" -c Release -o /app
+RUN dotnet publish "CollegeProject.csproj" -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "OpenBanking.dll"]
+ENTRYPOINT ["dotnet", "CollegeProject.dll"]
