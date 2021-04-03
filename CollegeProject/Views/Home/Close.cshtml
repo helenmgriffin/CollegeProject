@@ -1,0 +1,34 @@
+﻿@model Ticket
+
+@{
+    ViewBag.Title = "Close";
+}
+
+<h2>Close Ticket</h2>
+
+<h3>Closing Comments for Ticket # @Html.DisplayFor(model => model.TicketNumber) : @Html.DisplayFor(model => model.Summary)</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()   
+    <hr /> 
+    
+    <div>
+        @Html.TextAreaFor(model => model.ClosingComments, new { @class = "form-control", rows="5" })                
+    </div>
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.TicketGuid)
+    @Html.HiddenFor(model => model.TicketNumber)
+    @Html.HiddenFor(model => model.Summary)
+    @Html.HiddenFor(model => model.Description)
+    @Html.HiddenFor(model => model.CreationDate)
+    @Html.HiddenFor(model => model.Creator)
+    @Html.HiddenFor(model => model.TicketPriority)
+    
+    <br />
+    <div>
+        <input type="button" class="btn-sm btn-default" value="Back to Details" onclick="location.href='@Url.Action("Details", "Home", new { id = Model.TicketGuid })'" />
+        <input type="submit" value="Finish and Close Ticket" class="btn-sm btn-primary" />
+    </div>
+ }

@@ -1,0 +1,98 @@
+﻿@model Ticket
+
+@{ ViewBag.Title = "Details"; }
+
+<h2>Ticket Details</h2>
+
+<div>
+    <hr />
+    @if (Model.ClosedDate != null)
+    {
+        <div class="alert alert-info">
+            This ticket has been closed.
+        </div>
+    }
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TicketNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TicketNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Summary)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Summary)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TicketPriority)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TicketPriority)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Creator)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Creator)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+
+        @if (Model.ClosedDate != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.ClosedDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ClosedDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ClosingComments)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ClosingComments)
+            </dd>
+         }
+    </dl>
+</div>
+
+@using (Html.BeginForm("Reopen", "Home", new { id = Model.TicketGuid }))
+{
+@Html.AntiForgeryToken() 
+    {
+        <input type="button" class="btn-sm btn-default " value="Dashboard" onclick="location.href='@Url.Action("Index", "Home")'" /> 
+
+        if (Model.ClosedDate != null)
+        {
+            <input type="submit" class="btn-sm btn-warning " value="Open" /> 
+        }
+        if (Model.ClosedDate == null)
+        {
+            <input type="button" class="btn-sm btn-primary " value="Close" onclick="location.href='@Url.Action("Close", "Home", new {id = Model.TicketGuid })'" />
+        }
+    }
+}

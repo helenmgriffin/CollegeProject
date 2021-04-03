@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace CollegeProject.Controllers
 {
@@ -9,7 +11,7 @@ namespace CollegeProject.Controllers
         public IActionResult Login()
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
-                return Challenge(OpenIdConnectDefaults.AuthenticationScheme);
+                return Challenge(new AuthenticationProperties() { ExpiresUtc = DateTimeOffset.Now.AddMinutes(1), IsPersistent = true }, OpenIdConnectDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
 

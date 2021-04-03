@@ -6,16 +6,184 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CollegeProject.Models;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
 
 namespace CollegeProject.Controllers
 {
     public class HomeController : Controller
     {
+        IList<Ticket> tickets = new List<Ticket>();
+        private IConfiguration _configuration;
+
+        public HomeController()
+        {
+        }
+        public HomeController(IConfiguration Configuration)
+        {
+            _configuration = Configuration;
+        }
         public IActionResult Index()
         {
+            using (var client = new HttpClient())
+            {
+                //HTTP GET
+                var responseTask = client.GetAsync(_configuration["AWS:GetEndpointUrl"]);
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<Ticket>>();
+                    readTask.Wait();
+
+                    tickets = readTask.Result;
+                }
+                else //web api sent error response 
+                {
+                    //log response status here..
+
+                    tickets = new List<Ticket>();
+
+                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                }
+            }
+            return View(tickets);
+        }
+
+        // GET: Tickets/Details
+        public ActionResult Details(Guid id)
+        {
+            Ticket ticket = new Ticket();
+
+            if (id == null)
+            {
+                ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                return View(ticket);
+            }
+            ticket = this.GetTicket(id);
+
+            if (ticket == null)
+            {
+                return View(ticket);
+            }
+            return View(ticket);
+        }
+
+
+        // GET: Tickets/Create
+        public ActionResult Create()
+        {
+
+            if (!HttpContext.User.Identity.IsAuthenticated)
+                return Challenge(new AuthenticationProperties() { ExpiresUtc = DateTimeOffset.Now.AddMinutes(1), IsPersistent = true }, OpenIdConnectDefaults.AuthenticationScheme);
+
             return View();
         }
 
+        // POST: Tickets/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult Create(Ticket ticket)
+        {
+            if (ModelState.IsValid)
+            {
+                ticket.TicketGuid = Guid.NewGuid();
+                try
+                {
+                    ticket.TicketNumber = tickets.Max(t => t.TicketNumber) + 1;
+                }
+                catch
+                {
+                    ticket.TicketNumber = "1";
+                }
+                ticket.CreationDate = DateTime.Now;
+                tickets.Add(ticket);
+                //SaveChanges();
+
+                using (var client = new HttpClient())
+                {
+                    //HTTP POST
+                    var postTask = client.PutAsJsonAsync<Ticket>(_configuration["AWS:CreateEndpointUrl"], ticket);
+                    postTask.Wait();
+
+                    var result = postTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        TempData["Message"] = "Ticket successfully created!";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+                    }
+                }
+            }
+            return View(ticket);
+        }
+
+        // GET : Tickets/Close
+        public ActionResult Close(Guid id)
+        {
+            if (id == null)
+            {
+                ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+            }
+            Ticket ticket = this.GetTicket(id);
+            if (ticket == null)
+            {
+                return View(ticket);
+            }
+            return View(ticket);
+        }
+
+        // POST: Tickets/Close/        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Close(Ticket ticket)
+        {
+            if (ModelState.IsValid)
+            {               
+                ticket.ClosedDate = DateTime.Now;
+
+                if (this.UpdateTicket(ticket))
+                {
+                    TempData["Message"] = "Ticket successfully closed!";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+                }
+            }
+            return View(ticket);
+        }
+        // POST: Tickets/Reopen
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Reopen(Guid id)
+        {
+            if (ModelState.IsValid)
+            {
+                Ticket ticket = this.GetTicket(id);
+                ticket.ClosedDate = null;
+                ticket.ClosingComments = "";
+                if (this.UpdateTicket(ticket))
+                {
+                    TempData["Message"] = "Ticket successfully re-opened!";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+                }
+            }
+            return RedirectToAction("Index");
+        }
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -41,20 +209,68 @@ namespace CollegeProject.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Everyone")]
-        public IActionResult Everyone()
-        {
-            return View();
-        }
-        [Authorize(Roles = "Admin")]
-        public IActionResult Admin()
-        {
-            return View();
-        }
+        //[Authorize(Roles = "Everyone")]
+        //public IActionResult Everyone()
+        //{
+        //    return View();
+        //}
+        //[Authorize(Roles = "Admin")]
+        //public IActionResult Admin()
+        //{
+        //    return View();
+        //}
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private Ticket GetTicket(Guid id)
+        {
+            Ticket ticket = new Ticket();
+
+            using (var client = new HttpClient())
+            {
+                ticket.TicketGuid = id;
+
+                //HTTP GET
+                var responseTask = client.PostAsJsonAsync(_configuration["AWS:GetByIDEndpointUrl"], ticket);
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<Ticket>>();
+                    readTask.Wait();
+
+                    tickets = readTask.Result;
+
+                    if (tickets.Count > 0)
+                        ticket = tickets[0];
+                }
+            }
+
+            return ticket;
+        }
+
+        private bool UpdateTicket(Ticket ticket)
+        {
+            using (var client = new HttpClient())
+            {
+                //HTTP POST
+                var postTask = client.PostAsJsonAsync<Ticket>(_configuration["AWS:UpdateEndpointUrl"], ticket);
+                postTask.Wait();
+
+                var result = postTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
     }
 }

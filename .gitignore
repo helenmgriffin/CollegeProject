@@ -263,3 +263,4 @@ __pycache__/
 /bin/**
 /obj/**
 authconfig.json
+appsettings.json
