@@ -1,0 +1,20 @@
+
+{
+    "region" : "eu-west-1",
+    "configuration" : "Release",
+    "framework"     : "netcoreapp2.1",
+    "self-contained" : false,
+    "application"    : "CollegeProject",
+    "environment"    : "CollegeProject-prod",
+    "enable-xray"    : false,
+    "enhanced-health-type" : "basic",
+    "additional-options"   : "\"aws:autoscaling:launchconfiguration,SecurityGroups\"=\"sg-1eb07e44\";\"aws:ec2:vpc,Subnets\"=\"subnet-cf7977a9\"",
+    "solution-stack"       : "64bit Amazon Linux 2 v2.1.4 running .NET Core",
+    "environment-type"     : "SingleInstance",
+    "cname"                : "collegeproject-prod",
+    "instance-type"        : "t2.micro",
+    "key-pair"             : "",
+    "instance-profile"     : "aws-elasticbeanstalk-ec2-role",
+    "service-role"         : "aws-elasticbeanstalk-service-role",
+    "proxy-server"         : "nginx"
+}

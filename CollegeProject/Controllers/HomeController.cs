@@ -64,7 +64,7 @@ namespace CollegeProject.Controllers
         // POST: Tickets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        //[Authorize]
         public ActionResult Create(Ticket ticket)
         {
             if (ModelState.IsValid)
