@@ -14,7 +14,7 @@ namespace CollegeProject.Models
 
         [Display(Name = "#")]
         [JsonProperty("TicketNumber")]
-        public string TicketNumber { get; set; }
+        public int TicketNumber { get; set; }
 
         [Required(ErrorMessage = "A summary is required.")]
         [StringLength(50)]

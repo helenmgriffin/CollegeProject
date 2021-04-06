@@ -16,41 +16,18 @@ namespace CollegeProject.Controllers
 {
     public class HomeController : Controller
     {
-        IList<Ticket> tickets = new List<Ticket>();
         private IConfiguration _configuration;
 
-        public HomeController()
-        {
-        }
         public HomeController(IConfiguration Configuration)
         {
             _configuration = Configuration;
         }
         public IActionResult Index()
         {
-            using (var client = new HttpClient())
-            {
-                //HTTP GET
-                var responseTask = client.GetAsync(_configuration["AWS:GetEndpointUrl"]);
-                responseTask.Wait();
+            IList<Ticket> tickets = this.GetTickets();
+            if(tickets.Count <= 0)
+                ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
 
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var readTask = result.Content.ReadAsAsync<IList<Ticket>>();
-                    readTask.Wait();
-
-                    tickets = readTask.Result;
-                }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    tickets = new List<Ticket>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-            }
             return View(tickets);
         }
 
@@ -95,15 +72,14 @@ namespace CollegeProject.Controllers
                 ticket.TicketGuid = Guid.NewGuid();
                 try
                 {
+                    IList<Ticket> tickets = this.GetTickets();
                     ticket.TicketNumber = tickets.Max(t => t.TicketNumber) + 1;
                 }
                 catch
                 {
-                    ticket.TicketNumber = "1";
+                    ticket.TicketNumber = 1;
                 }
                 ticket.CreationDate = DateTime.Now;
-                tickets.Add(ticket);
-                //SaveChanges();
 
                 using (var client = new HttpClient())
                 {
@@ -225,6 +201,32 @@ namespace CollegeProject.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        private IList<Ticket> GetTickets()
+        {
+            IList<Ticket> tickets = new List<Ticket>();
+
+            using (var client = new HttpClient())
+            {
+                //HTTP GET
+                var responseTask = client.GetAsync(_configuration["AWS:GetEndpointUrl"]);
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<Ticket>>();
+                    readTask.Wait();
+
+                    tickets = readTask.Result;
+                }
+                else //web api sent error response 
+                {
+                    tickets = new List<Ticket>();
+                }
+            }
+
+            return tickets;
+        }
         private Ticket GetTicket(Guid id)
         {
             Ticket ticket = new Ticket();
@@ -243,7 +245,7 @@ namespace CollegeProject.Controllers
                     var readTask = result.Content.ReadAsAsync<IList<Ticket>>();
                     readTask.Wait();
 
-                    tickets = readTask.Result;
+                    IList<Ticket> tickets = readTask.Result;
 
                     if (tickets.Count > 0)
                         ticket = tickets[0];
