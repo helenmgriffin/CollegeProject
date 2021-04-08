@@ -1,12 +1,11 @@
-﻿pipeline{
+pipeline{
     agent any
     
     environment {
         dotnet ='C:\\Program Files (x86)\\dotnet\\'
         }
-        
     triggers {
-        pollSCM '* * * * *'
+        pollSCM '*/15 * * * *'
     }
     stages{
       stage('Checkout') {
@@ -48,4 +47,3 @@
         }
       }
  }
- 
