@@ -54,10 +54,6 @@ namespace CollegeProject.Controllers
         // GET: Tickets/Create
         public ActionResult Create()
         {
-
-            //if (!HttpContext.User.Identity.IsAuthenticated)
-            //    return Challenge(new AuthenticationProperties() { ExpiresUtc = DateTimeOffset.Now.AddMinutes(1), IsPersistent = true }, OpenIdConnectDefaults.AuthenticationScheme);
-
             return View();
         }
 
