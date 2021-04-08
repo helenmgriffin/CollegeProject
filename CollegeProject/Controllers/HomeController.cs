@@ -22,7 +22,7 @@ namespace CollegeProject.Controllers
         {
             _configuration = Configuration;
         }
-        public IActionResult Index()
+        public ActionResult Index()
         {
             IList<Ticket> tickets = this.GetTickets();
             if(tickets.Count <= 0)
