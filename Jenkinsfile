@@ -6,7 +6,7 @@ pipeline{
         }
         
     triggers {
-        pollSCM 'H * * * *'
+        pollSCM '*/15 * * * *'
     }
     stages{
       stage('Checkout') {
