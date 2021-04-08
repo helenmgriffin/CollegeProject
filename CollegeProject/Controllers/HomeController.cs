@@ -24,7 +24,7 @@ namespace CollegeProject.Controllers
         }
         public ActionResult Index()
         {
-            IList<Ticket> tickets = new List<Ticket>();// = this.GetTickets();
+            IList<Ticket> tickets = this.GetTickets();
             if(tickets.Count <= 0)
                 ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
 
