@@ -55,8 +55,8 @@ namespace CollegeProject.Controllers
         public ActionResult Create()
         {
 
-            if (!HttpContext.User.Identity.IsAuthenticated)
-                return Challenge(new AuthenticationProperties() { ExpiresUtc = DateTimeOffset.Now.AddMinutes(1), IsPersistent = true }, OpenIdConnectDefaults.AuthenticationScheme);
+            //if (!HttpContext.User.Identity.IsAuthenticated)
+            //    return Challenge(new AuthenticationProperties() { ExpiresUtc = DateTimeOffset.Now.AddMinutes(1), IsPersistent = true }, OpenIdConnectDefaults.AuthenticationScheme);
 
             return View();
         }
@@ -64,7 +64,6 @@ namespace CollegeProject.Controllers
         // POST: Tickets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize]
         public ActionResult Create(Ticket ticket)
         {
             if (ModelState.IsValid)
@@ -174,7 +173,7 @@ namespace CollegeProject.Controllers
             return View();
         }
 
-        [Authorize]
+        //[Authorize]
         public ActionResult Profile()
         {
             return View(HttpContext.User.Claims);
