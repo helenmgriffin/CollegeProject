@@ -11,7 +11,7 @@ WORKDIR /src
 COPY ["*.csproj", "CollegeProject/"]
 #COPY ["CollegeProject/CollegeProject.csproj", "CollegeProject/"]
 #RUN dotnet restore "CollegeProject/CollegeProject.csproj"
-dotnet restore -c Release -o /app
+RUN dotnet restore -c Release -o /app
 COPY . .
 WORKDIR "/src/CollegeProject"
 #RUN dotnet build "CollegeProject.csproj" -c Release -o /app
