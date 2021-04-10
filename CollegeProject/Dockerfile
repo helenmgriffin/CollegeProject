@@ -14,12 +14,10 @@ COPY ["*.csproj", "CollegeProject/"]
 RUN dotnet restore -c Release -o /app
 COPY . .
 WORKDIR "/src/CollegeProject"
-#RUN dotnet build "CollegeProject.csproj" -c Release -o /app
-RUN dotnet build -c Release -o /app
+RUN dotnet build "CollegeProject.csproj" -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish -c Release -o /app
-#RUN dotnet publish "CollegeProject.csproj" -c Release -o /app
+RUN dotnet publish "CollegeProject.csproj" -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
