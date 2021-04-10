@@ -8,14 +8,18 @@ EXPOSE 80
 
 FROM microsoft/dotnet:2.1-sdk-nanoserver-1709 AS build
 WORKDIR /src
-COPY ["CollegeProject/CollegeProject.csproj", "CollegeProject/"]
-RUN dotnet restore "CollegeProject/CollegeProject.csproj"
+COPY ["*.csproj", "CollegeProject/"]
+#COPY ["CollegeProject/CollegeProject.csproj", "CollegeProject/"]
+#RUN dotnet restore "CollegeProject/CollegeProject.csproj"
+dotnet restore -c Release -o /app
 COPY . .
 WORKDIR "/src/CollegeProject"
-RUN dotnet build "CollegeProject.csproj" -c Release -o /app
+#RUN dotnet build "CollegeProject.csproj" -c Release -o /app
+RUN dotnet build -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "CollegeProject.csproj" -c Release -o /app
+RUN dotnet publish -c Release -o /app
+#RUN dotnet publish "CollegeProject.csproj" -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
