@@ -5,7 +5,14 @@ VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollegeProject", "CollegeProject\CollegeProject.csproj", "{11F2DBDC-FC0A-424B-8973-DD090AC4F0FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollegeProject.Test", "CollegeProject.Test\CollegeProject.Test.csproj", "{3A5E334A-6974-4A31-8C6B-74990E9C5C16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollegeProject.Test", "CollegeProject.Test\CollegeProject.Test.csproj", "{3A5E334A-6974-4A31-8C6B-74990E9C5C16}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{597F892B-8C57-49F2-8A93-6136DDE0EF88}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		CollegeProject\Dockerfile = CollegeProject\Dockerfile
+		CollegeProject\Dockerfile.original = CollegeProject\Dockerfile.original
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
