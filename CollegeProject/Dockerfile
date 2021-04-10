@@ -8,7 +8,7 @@ EXPOSE 80
 
 FROM microsoft/dotnet:2.1-sdk-nanoserver-1709 AS build
 WORKDIR /src
-COPY ["CollegeProject/CollegeProject.csproj", "CollegeProject/"]
+COPY ["CollegeProject/CollegeProject.csproj", "./"]
 
 RUN dotnet restore "CollegeProject/CollegeProject.csproj"
 COPY . .
