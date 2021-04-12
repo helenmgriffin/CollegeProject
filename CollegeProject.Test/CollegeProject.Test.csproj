@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
@@ -20,6 +24,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CollegeProject\CollegeProject.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Properties\launchSettings.json" />
   </ItemGroup>
 
 </Project>

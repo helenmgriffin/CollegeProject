@@ -78,8 +78,9 @@ namespace CollegeProject.Controllers
 
                 using (var client = new HttpClient())
                 {
+                    string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("CreateEndpointUrl")) ? _configuration["AWS:CreateEndpointUrl"] : Environment.GetEnvironmentVariable("CreateEndpointUrl");
                     //HTTP POST
-                    var postTask = client.PutAsJsonAsync<Ticket>(_configuration["AWS:CreateEndpointUrl"], ticket);
+                    var postTask = client.PutAsJsonAsync<Ticket>(url, ticket);
                     postTask.Wait();
 
                     var result = postTask.Result;
@@ -202,8 +203,10 @@ namespace CollegeProject.Controllers
 
             using (var client = new HttpClient())
             {
+                
+                string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GetEndpointUrl")) ? _configuration["AWS:GetEndpointUrl"] : Environment.GetEnvironmentVariable("GetEndpointUrl");
                 //HTTP GET
-                var responseTask = client.GetAsync(_configuration["AWS:GetEndpointUrl"]);
+                var responseTask = client.GetAsync(url);
                 responseTask.Wait();
 
                 var result = responseTask.Result;
@@ -229,9 +232,11 @@ namespace CollegeProject.Controllers
             using (var client = new HttpClient())
             {
                 ticket.TicketGuid = id;
+                
+                string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GetByIDEndpointUrl")) ? _configuration["AWS:GetByIDEndpointUrl"] : Environment.GetEnvironmentVariable("GetByIDEndpointUrl");
 
                 //HTTP GET
-                var responseTask = client.PostAsJsonAsync(_configuration["AWS:GetByIDEndpointUrl"], ticket);
+                var responseTask = client.PostAsJsonAsync(url, ticket);
                 responseTask.Wait();
 
                 var result = responseTask.Result;
@@ -254,8 +259,10 @@ namespace CollegeProject.Controllers
         {
             using (var client = new HttpClient())
             {
+                
+                string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("UpdateEndpointUrl")) ? _configuration["AWS:UpdateEndpointUrl"] : Environment.GetEnvironmentVariable("UpdateEndpointUrl");
                 //HTTP POST
-                var postTask = client.PostAsJsonAsync<Ticket>(_configuration["AWS:UpdateEndpointUrl"], ticket);
+                var postTask = client.PostAsJsonAsync<Ticket>(url, ticket);
                 postTask.Wait();
 
                 var result = postTask.Result;
