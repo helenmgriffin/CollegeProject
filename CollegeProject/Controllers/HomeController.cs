@@ -232,8 +232,8 @@ namespace CollegeProject.Controllers
             using (var client = new HttpClient())
             {
                 ticket.TicketGuid = id;
-                
-                string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GetByIDEndpointUrl")) ? _configuration["AWS:GetByIDEndpointUrl"] : Environment.GetEnvironmentVariable("GetByIDEndpointUrl");
+
+                string url = Environment.GetEnvironmentVariable("GetByIDEndpointUrl");//String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GetByIDEndpointUrl")) ? _configuration["AWS:GetByIDEndpointUrl"] : Environment.GetEnvironmentVariable("GetByIDEndpointUrl");
 
                 //HTTP GET
                 var responseTask = client.PostAsJsonAsync(url, ticket);
