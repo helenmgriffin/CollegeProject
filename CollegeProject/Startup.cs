@@ -35,33 +35,33 @@ namespace CollegeProject
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddAuthentication(sharedOptions =>
-            {
-                sharedOptions.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-            .AddCookie()
-            .AddOpenIdConnect(options =>
-            {
-                options.ClientId = Configuration["okta:ClientId"];
-                options.ClientSecret = Configuration["okta:ClientSecret"];
-                options.Authority = Configuration["okta:Domain"];
-                options.CallbackPath = Configuration["okta:RedirectUri"];
-                options.SignedOutRedirectUri = Configuration["okta:PostLogoutRedirectUri"]; 
-                options.ResponseType = "code";
-                options.SaveTokens = true;
-                options.UseTokenLifetime = false;
-                options.GetClaimsFromUserInfoEndpoint = true;
-                options.Scope.Add("openid");
-                options.Scope.Add("profile");
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    NameClaimType = "name",
-                    RoleClaimType = "groups",
-                    ValidateIssuer = true
-                };
-            });
+            //services.AddAuthentication(sharedOptions =>
+            //{
+            //    sharedOptions.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            //})
+            //.AddCookie()
+            //.AddOpenIdConnect(options =>
+            //{
+            //    options.ClientId = Configuration["okta:ClientId"];
+            //    options.ClientSecret = Configuration["okta:ClientSecret"];
+            //    options.Authority = Configuration["okta:Domain"];
+            //    options.CallbackPath = Configuration["okta:RedirectUri"];
+            //    options.SignedOutRedirectUri = Configuration["okta:PostLogoutRedirectUri"]; 
+            //    options.ResponseType = "code";
+            //    options.SaveTokens = true;
+            //    options.UseTokenLifetime = false;
+            //    options.GetClaimsFromUserInfoEndpoint = true;
+            //    options.Scope.Add("openid");
+            //    options.Scope.Add("profile");
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        NameClaimType = "name",
+            //        RoleClaimType = "groups",
+            //        ValidateIssuer = true
+            //    };
+            //});
 
             services.AddAuthorization();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
