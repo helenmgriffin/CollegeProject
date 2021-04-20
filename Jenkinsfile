@@ -36,7 +36,7 @@ pipeline{
              }
        }
        //stage('Test: Publish Test Report'){
-       //    steps {
+       //    steps { 
              //nunit testResultsPattern: "TestOutput${env.BUILD_NUMBER}.xml"
              //step([$class: 'NUnitPublisher', testResultsPattern: "TestOutput${env.BUILD_NUMBER}.xml", debug: false, keepJUnitReports: true, skipJUnitArchiver:false, failIfNoResults: true])  
         //   }
