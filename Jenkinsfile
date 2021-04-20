@@ -9,7 +9,7 @@ pipeline{
         triggers {
         pollSCM '*/15 * * * *'
     }
-    stages{
+    stages{ 
       stage('Checkout') {
            steps { 
              git url: 'https://github.com/helenmgriffin/CollegeProject.git', branch: 'master'
