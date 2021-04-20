@@ -11,7 +11,7 @@ namespace CollegeProject.Test.Controllers
     [TestClass]
     public class HomeControllerTest
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
         public HomeControllerTest()
         {
             //Arrange

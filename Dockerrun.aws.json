@@ -1,0 +1,10 @@
+{
+	"AWSEBDockerrunVersion": "1",
+	"Image": 
+	{
+	  "Name": "helenmgriffin/collegeproject"
+	},
+	"Ports": [
+	   {"ContainerPort": "8080"}
+	]
+}
