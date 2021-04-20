@@ -18,7 +18,7 @@ pipeline{
       stage('Restore Packages'){ 
            steps{ 
               bat "dotnet restore ${PROJECTPATH}"
-            }
+            } 
       }
       stage('Clean'){
             steps{
