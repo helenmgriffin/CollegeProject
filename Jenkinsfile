@@ -8,7 +8,7 @@ pipeline{
         }
         triggers {
         pollSCM '*/15 * * * *'
-    }
+    } 
     stages{ 
       stage('Checkout') { 
            steps { 
