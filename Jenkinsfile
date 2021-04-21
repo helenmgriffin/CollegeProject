@@ -74,7 +74,7 @@ pipeline{
                 }
             }
         }
-    }
+    } 
     post{ 
       always{
         nunit testResultsPattern: 'TestOutput${env.BUILD_NUMBER}.xml'
