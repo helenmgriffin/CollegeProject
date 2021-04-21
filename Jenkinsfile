@@ -1,6 +1,6 @@
 pipeline{
     agent any
-    environment {
+    environment { 
         PROJECTPATH = 'C:\\Users\\JenkinsServiceUser\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\CollegeProject-Pipeline\\CollegeProject.sln'
         TESTPROJECTPATH = 'C:\\Users\\JenkinsServiceUser\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\CollegeProject-Pipeline\\CollegeProject.Test\\CollegeProject.Test.csproj'
         TESTREPORTPATH = 'C:\\Users\\JenkinsServiceUser\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\CollegeProject-Pipeline\\CollegeProject.Test\\CollegeProject.Test\\TestResults\\'
