@@ -16,7 +16,7 @@ namespace CollegeProject.Controllers
 {
     public class HomeController : Controller
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public HomeController(IConfiguration Configuration)
         {
@@ -41,7 +41,10 @@ namespace CollegeProject.Controllers
                 ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
                 return View(ticket);
             }
-            ticket = this.GetTicket(id);
+            else
+            {
+                ticket = this.GetTicket(id);
+            }
 
             if (ticket == null)
             {
@@ -101,11 +104,15 @@ namespace CollegeProject.Controllers
         // GET : Tickets/Close
         public ActionResult Close(Guid id)
         {
+            Ticket ticket = new Ticket();
             if (id == null)
             {
                 ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
             }
-            Ticket ticket = this.GetTicket(id);
+            else
+            {
+                ticket = this.GetTicket(id);
+            }
             if (ticket == null)
             {
                 return View(ticket);
@@ -180,17 +187,7 @@ namespace CollegeProject.Controllers
         {
             return View();
         }
-
-        //[Authorize(Roles = "Everyone")]
-        //public IActionResult Everyone()
-        //{
-        //    return View();
-        //}
-        //[Authorize(Roles = "Admin")]
-        //public IActionResult Admin()
-        //{
-        //    return View();
-        //}
+      
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
