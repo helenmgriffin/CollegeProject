@@ -1,0 +1,38 @@
+pipeline{
+    agent any
+    stages{
+      stage('Checkout') {
+           steps {
+             git url: 'https://github.com/helenmgriffin/CollegeProject.git', branch: 'master'
+             }
+      }
+        stage('Docker Image: Build')
+        {
+            steps
+            {
+                bat 'docker build -t helenmgriffin/collegeproject:latest .'
+            }
+        }
+        stage('Docker Image: Push to Docker Hub')
+        {
+            steps
+            {
+                
+                withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
+                    bat "docker login -u helenmgriffin -p ${dockerHubPwd}" 
+                }
+                bat 'docker push helenmgriffin/collegeproject:latest'
+            }
+        }
+    }
+    post{
+      always{
+          script
+          {
+            emailext body: "${currentBuild.currentResult}: Job   ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
+            recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+            subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
+          }
+      }
+    }
+ }

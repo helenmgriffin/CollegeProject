@@ -1,13 +1,13 @@
 pipeline{
     agent any
     environment {
-        PROJECTPATH = 'C:\\Users\\JenkinsServiceUser\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\CollegeProject-Pipeline\\CollegeProject.sln'
+        PROJECTPATH = 'C:\\Users\\JenkinsServiceUser\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\CollegeProject-Pipeline\\CollegeProject\\CollegeProject.csproj'
+        PROJECTSOLUTIONPATH = 'C:\\Users\\JenkinsServiceUser\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\CollegeProject-Pipeline\\CollegeProject.sln'
         TESTPROJECTPATH = 'C:\\Users\\JenkinsServiceUser\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\CollegeProject-Pipeline\\CollegeProject.Test\\CollegeProject.Test.csproj'
-        TESTREPORTPATH = 'C:\\Users\\JenkinsServiceUser\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\CollegeProject-Pipeline\\CollegeProject.Test\\CollegeProject.Test\\TestResults\\'
         dotnet ='C:\\Program Files (x86)\\dotnet\\'
         }
         triggers {
-        pollSCM '*/15 * * * *'
+        pollSCM '*/1 * * * *'
     }
     stages{
       stage('Checkout') {
@@ -17,71 +17,59 @@ pipeline{
       }
       stage('Restore Packages'){
            steps{
-              bat "dotnet restore ${PROJECTPATH}"
+              bat "dotnet restore ${PROJECTSOLUTIONPATH}"
             }
-      }
-      stage('Clean'){
-            steps{
-                bat "dotnet clean ${PROJECTPATH}"
-             }
       }
       stage('Build'){
            steps{
-              bat "dotnet build ${PROJECTPATH} --configuration Release"
+              bat "dotnet clean ${PROJECTSOLUTIONPATH}"
+              bat "dotnet build ${PROJECTSOLUTIONPATH} --configuration Release"
             }
        }
-       stage('Test: Unit Test'){
+        stage('Test: Unit Test'){
            steps {
-             bat "dotnet test ${TESTPROJECTPATH} -l:trx;LogFileName=TestOutput${env.BUILD_NUMBER}.xml"
+             bat "dotnet test ${TESTPROJECTPATH} -l:trx;LogFileName=${WORKSPACE}\\TestResults\\TestOutput${env.BUILD_NUMBER}.trx"
              }
-       }
-       //stage('Test: Publish Test Report'){
-       //    steps {
-             //nunit testResultsPattern: "TestOutput${env.BUILD_NUMBER}.xml"
-             //step([$class: 'NUnitPublisher', testResultsPattern: "TestOutput${env.BUILD_NUMBER}.xml", debug: false, keepJUnitReports: true, skipJUnitArchiver:false, failIfNoResults: true])  
-        //   }
-       // }
-       stage('Publish'){
+        }
+        stage('Test: Publish Unit Test Report'){
+           steps {
+               echo "publish the MSTest test Report"
+                 script{
+                     mstest testResultsFile: 'TestResults/*.trx'
+                 }
+           }
+        }
+        stage('Publish to Local Folder'){
              steps{
-               bat "dotnet publish ${PROJECTPATH}  -c Release -o published"
-               //archiveArtifacts artifacts: 'published/*.zip', followSymlinks: false, onlyIfSuccessful: true
+                 script
+                 {
+                   bat "dotnet publish ${PROJECTPATH} -p:PublishTrimmed=true -c Release -r win-x64 -o published"
+                   zip zipFile: "CollegeProject.zip", archive: false, dir: 'published', overwrite: true
+                   archiveArtifacts artifacts: "Archive\\CollegeProject.zip", fingerprint: true
+                 }
              }
         }
-        stage('Docker Image: Build')
-        {
-            steps
-            {
-                bat 'docker build -t helenmgriffin/collegeproject:latest .'
-            }
-        }
-        stage('Docker Image: Push to Docker Hub')
-        {
-            steps
-            {
-                
-                withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
-                    bat "docker login -u helenmgriffin -p ${dockerHubPwd}" 
-                }
-                bat 'docker push helenmgriffin/collegeproject:latest'
-            }
-        }
-        stage('Run CollegeProject-Pipeline-EC2 To Provision AWS EC2 Instance')
-        {
-            steps
-            {
-                script
-                {
-                    build job: 'CollegeProject-Pipeline-EC2', parameters: [string(name: 'AWS_DEFAULT_REGION', value: 'eu-west-1'), credentials(description: 'AWS ACCESS KEY ID is used to set the default region for the environment variables', name: 'AWS_ACCESS_KEY_ID', value: 'aws_access_key_id'), credentials(description: 'AWS SECRET ACCESS KEY is used to set the default region for the environment variables', name: 'AWS_SECRET_ACCESS_KEY', value: 'aws_secret_access_key')]
+        /*stage('Build + SonarQube Analysis') {
+            steps{
+                script {
+                    def sqScannerMsBuildHome = tool 'SonarScanner for MSBuild'
+                    withSonarQubeEnv('Sonar8.7') {
+                      bat "${sqScannerMsBuildHome}\\SonarScanner.MSBuild.exe begin /k:helenmgriffin.collegeproject"
+                      bat 'dotnet build'
+                      bat "${sqScannerMsBuildHome}\\SonarScanner.MSBuild.exe end"
+                    }
                 }
             }
-        }
+        }*/
     }
     post{
       always{
-        nunit testResultsPattern: 'TestOutput${env.BUILD_NUMBER}.xml'
-        emailext body: "${currentBuild.currentResult}: Job   ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
-        recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
-        subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
-        }
+          script
+          {
+            emailext body: "${currentBuild.currentResult}: Job   ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
+            recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], 
+            subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
+          }
       }
+    }
  }
