@@ -26,7 +26,7 @@ namespace CollegeProject.Controllers
         {
             IList<Ticket> tickets = this.GetTickets();
             if(tickets.Count <= 0)
-                ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                ModelState.AddModelError(string.Empty, "No Tickets to Display.");
 
             return View(tickets);
         }
@@ -82,7 +82,7 @@ namespace CollegeProject.Controllers
                 using (var client = new HttpClient())
                 {
                     //string url = _configuration["AWS:CreateEndpointUrl"];
-                    string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("CreateEndpointUrl")) ? _configuration["AWS:CreateEndpointUrl"] : Environment.GetEnvironmentVariable("CreateEndpointUrl");
+                    string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PutTicketGatewayUrl")) ? _configuration["AWS:PutTicketGatewayUrl"] : Environment.GetEnvironmentVariable("PutTicketGatewayUrl");
                     //HTTP POST
                     var postTask = client.PutAsJsonAsync<Ticket>(url, ticket);
                     postTask.Wait();
@@ -203,7 +203,7 @@ namespace CollegeProject.Controllers
             {
 
                 //string url = _configuration["AWS:GetEndpointUrl"];
-                string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GetEndpointUrl")) ? _configuration["AWS:GetEndpointUrl"] : Environment.GetEnvironmentVariable("GetEndpointUrl");
+                string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GetTicketsGatewayUrl")) ? _configuration["AWS:GetTicketsGatewayUrl"] : Environment.GetEnvironmentVariable("GetTicketsGatewayUrl");
                 //HTTP GET
                 var responseTask = client.GetAsync(url);
                 responseTask.Wait();
@@ -233,7 +233,7 @@ namespace CollegeProject.Controllers
                 ticket.TicketGuid = id;
 
                 //string url = _configuration["AWS:GetByIDEndpointUrl"];
-                string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GetByIDEndpointUrl")) ? _configuration["AWS:GetByIDEndpointUrl"] : Environment.GetEnvironmentVariable("GetByIDEndpointUrl");
+                string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GetTicketByIDGatewayUrl")) ? _configuration["AWS:GetTicketByIDGatewayUrl"] : Environment.GetEnvironmentVariable("GetTicketByIDGatewayUrl");
 
                 //HTTP GET
                 var responseTask = client.PostAsJsonAsync(url, ticket);
@@ -261,7 +261,7 @@ namespace CollegeProject.Controllers
             {
                 
                 //string url = _configuration["AWS:UpdateEndpointUrl"];
-                string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("UpdateEndpointUrl")) ? _configuration["AWS:UpdateEndpointUrl"] : Environment.GetEnvironmentVariable("UpdateEndpointUrl");
+                string url = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("UpdateTicketGatewayUrl")) ? _configuration["AWS:UpdateTicketGatewayUrl"] : Environment.GetEnvironmentVariable("UpdateTicketGatewayUrl");
                 //HTTP POST
                 var postTask = client.PostAsJsonAsync<Ticket>(url, ticket);
                 postTask.Wait();
