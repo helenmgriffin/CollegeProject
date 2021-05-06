@@ -12,7 +12,11 @@
             "commandName": "IISExpress",
             "launchBrowser": true,
             "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "UpdateTicketGatewayUrl": "https://iow100gg3e.execute-api.eu-west-1.amazonaws.com/prod/",
+                "GetTicketsGatewayUrl": "https://3fj5gfm1u9.execute-api.eu-west-1.amazonaws.com/prod/",
+                "GetTicketByIDGatewayUrl": "https://6sr91uo13h.execute-api.eu-west-1.amazonaws.com/prod/",
+                "PutTicketGatewayUrl": "https://e615eacszh.execute-api.eu-west-1.amazonaws.com/prod/"
             }
         },
         "CollegeProject": {
