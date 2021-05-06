@@ -39,7 +39,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.TicketPriority, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            <select asp-for="TicketPriority" asp-items="Html.GetEnumSelectList<TicketPriority>()">
+            <select asp-for="TicketPriority" asp-items="Html.GetEnumSelectList<TicketPriority>()" class="form-control">
                 <option selected="selected" value="">Please select</option>
             </select>
             @Html.ValidationMessageFor(model => model.TicketPriority, "", new { @class = "text-danger" })
